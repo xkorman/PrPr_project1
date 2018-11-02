@@ -13,10 +13,8 @@ typedef struct {
     int date;
 } PRIESTUPOK;
 
-void velkost(int *n){
+void velkost(int *n,FILE *f){
     char pomocna[60];
-    FILE *f;
-    f=fopen("../priestupky.txt","r");
     while(feof(f) == 0){
         fgets(pomocna,60,f);
         (*n)++;
@@ -142,7 +140,7 @@ int main ()
         printf("subor neexistuje\n");
         return 0;
     }
-    velkost(&n);
+    velkost(&n,f);
     PRIESTUPOK *osoba=0;
     do {
         switch (vstup){
