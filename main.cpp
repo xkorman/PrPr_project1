@@ -26,8 +26,35 @@ void velkost(int *n,FILE *f){
     }
 }
 
-void funkcia_v(PRIESTUPOK *osoba, int n){
+void funkcia_o(int n,FILE *f, PRIESTUPOK **osoba){
+    rewind(f);
     if(osoba != 0){
+        free(*osoba);
+    }
+    if((*osoba = (PRIESTUPOK *) malloc(n * sizeof(PRIESTUPOK))) == 0 || (n * sizeof(PRIESTUPOK)) == 0){
+        printf("Pole nie je naplnené.");
+    } else {
+        char temp[60];
+        for(int j = 0;j < n; j++){
+            fgets((*osoba+j)->meno, 60, f);
+            fgets((*osoba+j)->pohlavie, 60, f);
+            fgets(temp, 60, f);
+            (*osoba+j)->roknar = atoi(temp);
+            fgets((*osoba+j)->spz, 9, f);
+            fgets(temp, 60, f);
+            (*osoba+j)->typ = atoi(temp);
+            fgets(temp, 60, f);
+            (*osoba+j)->pokuta = atoi(temp);
+            fgets(temp, 60, f);
+            (*osoba+j)->date = atoi(temp);
+            fgets(temp, 60, f);
+            strcpy(temp, "");
+        }
+    }
+
+}
+void funkcia_v(PRIESTUPOK *osoba, int n){
+    if(osoba != nullptr){
         for (int i = 0; i < n; i++) {
             printf("%d %d",i,n);
             printf("meno priezvisko: %spohlavie: %srok narodenia: %d\nSPZ: %styp priestupku: %d\nvyska pokuty: %d\ndatum priestupku: %d\n\n",osoba[i].meno, osoba[i].pohlavie, osoba[i].roknar, osoba[i].spz, osoba[i].typ, osoba[i].pokuta, osoba[i].date);
@@ -135,48 +162,19 @@ int main ()
     char vstup;
     int n = 0;
     FILE *f;
-    f=fopen("../priestupky.txt", "r");
+    f=fopen("../priestupky.txt", "r+");
     if (f == nullptr) {
         printf("subor neexistuje\n");
         return 0;
     }
     velkost(&n,f);
-    PRIESTUPOK *osoba=0;
+    PRIESTUPOK *osoba=NULL;
     do {
         switch (vstup){
             case 'o':
-                FILE *f;
-                f=fopen("../priestupky.txt", "r");
-                if (f == nullptr) {
-                    printf("subor neexistuje\n");
-                    return 0;
-                }
-                if(osoba != 0){
-                    free(osoba);
-                }
-                if((osoba = (PRIESTUPOK *) malloc(n * sizeof(PRIESTUPOK))) == 0 || (n * sizeof(PRIESTUPOK)) == 0){
-                    printf("Pole nie je naplnené.");
-                }
-                char temp[60];
-                for(int j = 0;j < n; j++){
-                    fgets(osoba[j].meno, 60, f);
-                    fgets(osoba[j].pohlavie, 60, f);
-                    fgets(temp, 60, f);
-                    osoba[j].roknar = atoi(temp);
-                    fgets(osoba[j].spz, 9, f);
-                    fgets(temp, 60, f);
-                    osoba[j].typ = atoi(temp);
-                    fgets(temp, 60, f);
-                    osoba[j].pokuta = atoi(temp);
-                    fgets(temp, 60, f);
-                    osoba[j].date = atoi(temp);
-                    fgets(temp, 60, f);
-                    strcpy(temp, "");
-                }
-                fclose(f);
+                funkcia_o(n,f,&osoba);
                 break;
             case 'v':
-                printf("%d",n);
                 funkcia_v(osoba,n);
                 break;
             case 'x':
